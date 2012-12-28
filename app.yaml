@@ -1,0 +1,22 @@
+application: schikkams
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+
+handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+
+- url: /sol/python
+  static_dir: sol/python
+
+- url: /.*
+  script: finder.app
+
+libraries:
+- name: jinja2
+  version: latest
+
+

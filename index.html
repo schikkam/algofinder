@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+     <title>All About Avis</title>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+     <script>
+	function createDoc()
+  	{
+	  var doc=document.open("text/html","replace");
+	  var txt="<html><body>Learning about the HTML DOM is fun!</body></html>";
+	  doc.write(txt);
+	  doc.close();
+	 }
+	function readText(that){
+
+          if(that){
+	    var reader = new FileReader();
+	    reader.onload = function (e){  
+		 var output=e.target.result;
+	  	 //process text to show only lines with "@":				
+		 output=output.split("\n").filter(/./.test, /\@/).join("\n");
+ 	  	 document.getElementById('main').innerHTML= output;
+		 };//end onload()
+		 reader.readAsText(that.files[0]);
+  	     }//end if html5 filelist support
+             else {
+	          alert(that.files);
+ 	     }
+	} 
+
+ 	function init(){  
+	  var extText = window.frames[0].document.getElementsByTagName("HTML")[0].outerHTML;
+    	  document.getElementById("nMessage").value = extText;
+	}
+ 	function testFun(){ 
+    	  alert("This is a demo");
+	}
+     </script>
+</head>
+
+<body >
+     <header>
+          <hgroup>
+               <h1>Tech Savvy </h1>
+               <h2>Solution Where You Discover</h2>
+          </hgroup>
+     </header>
+<nav>
+     <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Puzzles</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact Us</a></li>
+     </ul>
+</nav>
+<article>
+     <header>
+          <h4>
+               <a href="#" title="Link to this post" rel="bookmark">Python KB</a>
+          </h4>
+     </header>
+     <p>  </p>
+     <section>
+          <li><a href="/sol/python/lss.txt" title="Link to this post" >Longest Common SubSequence</a></li>
+          <li><a href="#" title="Link to this post" rel="bookmark">Travelling Sales Man</a></li>
+
+          
+     </section>
+     <header>
+          <h4>
+               <a href="#" title="Link to this post" rel="bookmark">Perl KB</a>
+          </h4>
+     </header>
+     <p>  </p>
+     <section>
+          <li><a href="#" title="Link to this post" rel="bookmark">Longest Common SubSequence</a></li>
+          <li><a href="#" title="Link to this post" rel="bookmark">Travelling Sales Man</a></li>
+     </section>
+     <header>
+          <h4>
+               <a href="#" title="Link to this post" rel="bookmark">Linux KB</a>
+          </h4>
+     </header>
+     <p>  </p>
+     <section>
+          <li><a href="#" title="Link to this post" rel="bookmark">Longest Common SubSequence</a></li>
+          <li><a href="#" title="Link to this post" rel="bookmark">Travelling Sales Man</a></li>
+     </section>
+
+<!--	
+     <section>
+       <header>
+          <h4>Perl</h4>
+     </header>
+     <p class="next-to-aside"> . . .  <mark>veni, vidi, vici</mark>. Mater . . .</p> 
+     <aside>
+          <p>This is an aside that has multiple lines. . . .</p>
+     </aside>
+
+     <menu label="File">
+          <button type="button" onClick="JavaScript:alert('Clio . . .')">Clio</button>
+          <button type="button" onClick="JavaScript:alert('Thalia . . .')">Thalia</button>
+          <button type="button" onClick="JavaScript:alert
+		                           ('Urania . . .')">Urania</button>
+          <button type="button" onClick="JavaScript:alert
+		                           ('Calliope . . .')">Calliope</button>
+     </menu> 
+
+     <figure><img src="stonehenge.jpg" alt="Stonehenge" width="200" height="131"/>
+          <figcaption>Figure 1. Stonehenge</figcaption>
+     </figure>
+
+</section>
+
+	
+     <section>
+          <header>
+               <h1>This is a video section</h1>
+          </header>
+          <p><video src="http://people.xiph.org/~maikmerten/demos/BigBuckBunny.ogv" 
+                                controls autoplay loop>
+                <div class="no-html5-video"><p>This video will work in 
+                                Mozilla Firefox or Google Chrome only. </p>
+                </div>
+          </video></p> 
+
+     </section>
+</article>
+-->
+ <footer>
+              <p>Copyright: 2011 AlgoFinder All rights reserved.</p>
+          </footer>
+     </body>
+</html>   
