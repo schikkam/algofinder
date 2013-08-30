@@ -1,0 +1,240 @@
+#Desc: Program To Analyze List Of Regular Expressions And Produce A Common RegEx Among Them
+#Input: Log File
+#Output: A Common RegEx
+#Author: Shiva
+
+
+import os, sys;
+import re, string;
+
+file_level_regex= []
+file="/home/shiva/Practice/python/hit.log"
+#file="/home/shiva/Practice/python/syslog"
+#file="/home/shiva/Practice/python/dmesg"
+#file="/tmp/abc"
+
+d={}
+space = "\s"
+fslash = """/"""
+bslash = """\\"""
+upchars=(string.ascii_uppercase)
+lwchars=string.ascii_lowercase
+digits="0123456789"
+newline = """\n"""
+
+lookupHash = \
+{ 
+  upchars : """\w""",
+  lwchars : """\w""",
+  digits : """\d""",
+  space : """\s""",
+  fslash : """\/""",
+  bslash : """\\""",
+  ':' : """\:""",
+  '+' : """\+""",
+  "-" : """\-""",
+  '*' : """\*""",
+  "." : """\.""",
+  '%' : """\%""",
+  '$' : """\$""",
+  '|' : """\|""",
+  ',' : """\,""",
+  '(' : """\(""",
+  ')' : """\)""",
+  '{' : """\{""",
+  '}' : """\}""",
+  '[' : """\[""",
+  ']' : """\]""",
+  newline : """\n\r""",
+  "_" : """\_""",
+  "=" : """\=""",
+  "^" : """\^""",
+  "&" : """\&""",
+  "'" : """\'""",
+  '"' : """\"""",
+  "`" : """`""",
+  ">" : """\>""",
+  "<" : """\<""",
+  "@" : """\@""",
+  "#" : """\#""",
+  "!" : """\!""",
+  '~' : """\~""",
+  ' ' : """\s""",
+  "\t" : """\t""",
+  ";" : """\;""",
+  "?" : """\?"""
+}  
+
+def get_over_all_regex(file):
+  #print "Method::get_over_all_regex"
+  fewRegexes = []
+  compactRE = [] 
+  fewLines=list(open(file,"r").readlines())[1:200]
+  for line in fewLines:
+    #print "LOG LINE:"+line
+    regex_line = get_regex_fromline(line)
+    #print "REGEX LINE:"+regex_line
+    fewRegexes.append(regex_line)
+    compactRE.append(compactre(regex_line))
+  return compactRE
+
+def get_regex_fromline(line):
+  #print "Iam her in get_regex_fromline"
+  regex=''
+  #print "line = " + line
+  for char in line:
+    if char in ("\n\r", "\n"):
+      regex=regex+lookupHash[newline]      
+    elif char in upchars+lwchars:
+      regex=regex+lookupHash[upchars]
+    elif char in digits:
+      regex=regex+lookupHash[digits]
+    else:
+      regex=regex+lookupHash[char] 
+      #print "char = "+char+ ",lookupHash[char]"+ lookupHash[char]
+  #print "RegEx= " + regex
+  return regex
+  #reg = ""
+  #line.replace 
+	#	{
+	#	   everything in [], (), {} with '(.*)'
+	#	   every word with \w
+	#	   every digit with \d
+	#	}
+  #return line # basically the returned line must have only regex strings
+
+
+#0: \w \d \d\d:\d\d:\d\d \w-\w-\w \w
+#1: \w \d \d\d:\d\d:\d\d \w[(.*)]
+
+#h['\w'] = {
+#	'\d': {
+#		'\d\d:\d\d:\d\d': {
+#				'\w-\w-\w': '\w'
+#				'\w[(.*)]': None
+#		
+#		}
+#	}
+#}
+
+#compact regex 
+def compactre(regex):
+  i=1;
+  regex1=''
+  regex_new=''
+  #Following code can be optimized
+  for ele in regex:
+    if i%2 == 0:
+      regex1 = regex1+ele
+    i=i+1
+  #print regex1
+  counter=1
+  pchar=regex1[0]
+  for cur_char in regex1:
+    if cur_char == pchar:
+      counter=counter+1
+    else:
+      temp='\\'+pchar
+      pchar=cur_char
+      if counter > 1:
+        temp=temp+'+'
+      elif counter == 1:
+        temp=temp+'*'
+        #temp=temp
+      regex_new=regex_new+temp
+      counter=1
+  #print regex_new
+  return regex_new
+
+def build_the_hash(lines): # all regexes from a single file
+  h = {}
+  print "Method::build_the_hash"
+  pass
+
+
+#Unused code, Can be cleaned later
+def dictizeString(string, dictionary):
+  parts = string.split('\\', 1)
+  if len(parts) > 1:
+    #print "parts[0]=" + parts[0] + " Type ="+str(type(dictionary))
+    branch = dictionary.setdefault(parts[0], {})
+    dictizeString(parts[1], branch)
+  else:
+    if dictionary.has_key(parts[0]):
+      #print "parts[0]="+ parts[0]+ ", dictionary[parts[0]]=",dictionary[parts[0]] 
+      #If there's an addition error here, it's because invalid data was added
+      #print parts[0]
+      if type(dictionary[parts[0]]) == type(int):
+        dictionary[parts[0]] +=  1
+    else:
+      dictionary[parts[0]] = 1
+
+#Get the Common Regex Part among all
+def visitEachEleInHash(s,cmn_regex):
+  #print "Method::visitEachEleInHash"
+  if type(s) == type({}):
+    if len(s.keys()) > 1:
+      return cmn_regex;
+    else:
+      for k, v in s.items():
+        if k != "count":
+          cmn_regex.append(k)
+        visitEachEleInHash(v, cmn_regex)
+  return cmn_regex
+
+
+def updateHash(h, str):
+    if len(str) == 0:
+        count = 1
+        if h.has_key('count'):
+            count = h['count'] + 1
+        return {'count': count}
+    k = str[0]
+    if not h.has_key(k):
+        h[k] = updateHash({}, str[1:]) #create a new entry
+    else:
+        h[k].update(updateHash(h[k], str[1:])) # add a key to the existing sub hash
+    return h
+
+
+def printREList(regex):
+  for i in regex: 
+     print i
+  
+def getMaxLength(regex):
+  k=0
+  for i in regex:
+    if len(i) > k:
+      k=len(i)
+  return k
+
+#main function calls
+def main(file):
+  #print "Method:main()"
+  #print lookupHash
+  final_regex = get_over_all_regex(file)  
+  h={}
+  for i in final_regex:
+    print "Generalizing Regex = "+i
+    #dictizeString(i, d)
+    h=updateHash(h,i)
+  #print h
+  #Generalize Regex
+  cmn_regex=''.join(str(i) for i in visitEachEleInHash(h, []))[:]
+  if len(cmn_regex) == 1:
+    print "\n\nUnable To Build Generic Regex For Your File Format"
+    cmn_regex="""(.*)"""
+  elif getMaxLength(final_regex) >= len(cmn_regex):
+    cmn_regex = cmn_regex + """[^\\n\\r]*"""
+  print "\n\tGeneric Regex -:" + cmn_regex
+
+
+if __name__ == "__main__":
+  if len(sys.argv) > 1: 
+    print "Analyzing Regex's....."
+    main(sys.argv[1]);
+    print "Completed"
+  else:  
+    print "Usage: python parser.py <FilePath>"
+
+
